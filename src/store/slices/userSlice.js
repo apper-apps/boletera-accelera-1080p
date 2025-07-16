@@ -11,7 +11,7 @@ const initialState = {
 };
 
 const userSlice = createSlice({
-  name: "user",
+name: "user",
   initialState,
   reducers: {
     setUser: (state, action) => {
@@ -20,6 +20,23 @@ const userSlice = createSlice({
     },
     setRole: (state, action) => {
       state.role = action.payload;
+    },
+    login: (state, action) => {
+      const { email, password } = action.payload;
+      // Admin credentials validation
+      if (email === "ramvidalgmail.com" && password === "Elevation1010$") {
+        state.profile = { email, name: "Admin User" };
+        state.role = "admin";
+        state.isAuthenticated = true;
+        return;
+      }
+      // Could add other user types here
+      throw new Error("Credenciales inválidas");
+    },
+    logout: (state) => {
+      state.profile = null;
+      state.isAuthenticated = false;
+      state.role = "buyer";
     },
     clearUser: (state) => {
       state.profile = null;
@@ -32,5 +49,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, setRole, clearUser, updatePreferences } = userSlice.actions;
+export const { setUser, setRole, login, logout, clearUser, updatePreferences } = userSlice.actions;
 export default userSlice.reducer;

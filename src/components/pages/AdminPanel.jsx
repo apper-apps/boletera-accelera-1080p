@@ -1,14 +1,24 @@
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
+import { toast } from "react-toastify";
 import { eventService } from "@/services/api/eventService";
 import { zoneService } from "@/services/api/zoneService";
 import { ticketService } from "@/services/api/ticketService";
+import { login, logout } from "@/store/slices/userSlice";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
+import Label from "@/components/atoms/Label";
 import { formatCurrency } from "@/utils/formatters";
 
 const AdminPanel = () => {
+  const dispatch = useDispatch();
+  const { isAuthenticated, role } = useSelector(state => state.user);
+  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
+  const [loginLoading, setLoginLoading] = useState(false);
   const [events, setEvents] = useState([]);
   const [zones, setZones] = useState([]);
   const [tickets, setTickets] = useState([]);
@@ -54,12 +64,102 @@ const AdminPanel = () => {
     } finally {
       setLoading(false);
     }
+};
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoginLoading(true);
+    
+    try {
+      dispatch(login(loginForm));
+      toast.success("Acceso autorizado");
+      loadData(); // Load data after successful login
+    } catch (error) {
+      toast.error("Credenciales inválidas");
+    } finally {
+      setLoginLoading(false);
+    }
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    toast.info("Sesión cerrada");
   };
 
   useEffect(() => {
-    loadData();
-  }, []);
+    if (isAuthenticated && role === "admin") {
+      loadData();
+    }
+  }, [isAuthenticated, role]);
 
+  // Show login form if not authenticated as admin
+  if (!isAuthenticated || role !== "admin") {
+    return (
+      <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-xl p-8 card-shadow"
+        >
+          <div className="text-center mb-8">
+            <div className="bg-gradient-to-r from-primary-500 to-accent-500 rounded-full p-3 inline-block mb-4">
+              <ApperIcon name="Shield" className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-2xl font-display font-bold text-gray-900 mb-2">
+              Acceso <span className="gradient-text">Administrativo</span>
+            </h1>
+            <p className="text-gray-600">
+              Ingresa tus credenciales para acceder al panel
+            </p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="text"
+                value={loginForm.email}
+                onChange={(e) => setLoginForm(prev => ({ ...prev, email: e.target.value }))}
+                placeholder="Ingresa tu email"
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="password">Contraseña</Label>
+              <Input
+                id="password"
+                type="password"
+                value={loginForm.password}
+                onChange={(e) => setLoginForm(prev => ({ ...prev, password: e.target.value }))}
+                placeholder="Ingresa tu contraseña"
+                required
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full btn-gradient"
+              disabled={loginLoading}
+            >
+              {loginLoading ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Verificando...
+                </div>
+              ) : (
+                <div className="flex items-center justify-center">
+                  <ApperIcon name="LogIn" className="w-4 h-4 mr-2" />
+                  Iniciar Sesión
+                </div>
+              )}
+            </Button>
+          </form>
+        </motion.div>
+      </div>
+    );
+  }
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -76,20 +176,30 @@ const AdminPanel = () => {
     );
   }
 
-  return (
+return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-8"
+        className="flex justify-between items-center mb-8"
       >
-        <h1 className="text-3xl font-display font-bold text-gray-900 mb-2">
-          Panel de <span className="gradient-text">Administración</span>
-        </h1>
-        <p className="text-lg text-gray-600">
-          Gestiona eventos, zonas y visualiza estadísticas de ventas
-        </p>
+        <div>
+          <h1 className="text-3xl font-display font-bold text-gray-900 mb-2">
+            Panel de <span className="gradient-text">Administración</span>
+          </h1>
+          <p className="text-lg text-gray-600">
+            Gestiona eventos, zonas y visualiza estadísticas de ventas
+          </p>
+        </div>
+        <Button
+          onClick={handleLogout}
+          variant="secondary"
+          className="flex items-center"
+        >
+          <ApperIcon name="LogOut" className="w-4 h-4 mr-2" />
+          Cerrar Sesión
+        </Button>
       </motion.div>
 
       {/* Stats Dashboard */}
