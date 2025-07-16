@@ -114,37 +114,43 @@ const SeatMap = ({ event, zones, seats, selectedZone }) => {
         </div>
       </div>
 
-      <div className="relative bg-gray-50 rounded-lg p-4 min-h-[400px]">
+<div className="relative bg-gray-50 rounded-lg p-4 min-h-[400px]">
         <div
           ref={mapRef}
           className="relative w-full h-full seat-map"
           style={{ minHeight: "400px" }}
         >
           {/* Stage */}
-          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-gray-700 to-gray-800 text-white px-6 py-3 rounded-lg shadow-lg">
+          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-gray-700 to-gray-800 text-white px-6 py-3 rounded-lg shadow-lg z-10">
             <div className="flex items-center space-x-2">
               <ApperIcon name="Music" className="w-5 h-5" />
               <span className="font-medium">ESCENARIO</span>
             </div>
           </div>
 
-          {/* Seats */}
-          {filteredSeats.map((seat) => (
-            <motion.circle
-              key={seat.Id}
-              cx={seat.coordinates.x}
-              cy={seat.coordinates.y}
-              r="8"
-              fill={getSeatColor(seat)}
-              className={getSeatClassName(seat)}
-              onClick={() => handleSeatClick(seat)}
-              onMouseEnter={(e) => handleSeatHover(seat, e)}
-              onMouseLeave={() => setHoveredSeat(null)}
-              whileHover={seat.status === "available" ? { scale: 1.2 } : {}}
-              whileTap={seat.status === "available" ? { scale: 0.95 } : {}}
-            />
-          ))}
-
+          {/* Seats SVG Container */}
+          <svg
+            className="absolute inset-0 w-full h-full"
+            viewBox="0 0 800 400"
+            preserveAspectRatio="xMidYMid meet"
+            style={{ minHeight: "400px" }}
+          >
+            {filteredSeats.map((seat) => (
+              <motion.circle
+                key={seat.Id}
+                cx={seat.coordinates.x}
+                cy={seat.coordinates.y}
+                r="8"
+                fill={getSeatColor(seat)}
+                className={getSeatClassName(seat)}
+                onClick={() => handleSeatClick(seat)}
+                onMouseEnter={(e) => handleSeatHover(seat, e)}
+                onMouseLeave={() => setHoveredSeat(null)}
+                whileHover={seat.status === "available" ? { scale: 1.2 } : {}}
+                whileTap={seat.status === "available" ? { scale: 0.95 } : {}}
+              />
+            ))}
+          </svg>
           {/* Tooltip */}
           {hoveredSeat && (
             <SeatTooltip
