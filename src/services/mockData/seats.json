@@ -1,0 +1,242 @@
+[
+  {
+    "Id": 1,
+    "zoneId": 1,
+    "identifier": "VIP-A1",
+    "coordinates": {"x": 100, "y": 200},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 2,
+    "zoneId": 1,
+    "identifier": "VIP-A2",
+    "coordinates": {"x": 120, "y": 200},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 3,
+    "zoneId": 1,
+    "identifier": "VIP-A3",
+    "coordinates": {"x": 140, "y": 200},
+    "status": "sold",
+    "reservedUntil": null
+  },
+  {
+    "Id": 4,
+    "zoneId": 1,
+    "identifier": "VIP-A4",
+    "coordinates": {"x": 160, "y": 200},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 5,
+    "zoneId": 1,
+    "identifier": "VIP-A5",
+    "coordinates": {"x": 180, "y": 200},
+    "status": "reserved",
+    "reservedUntil": "2024-03-15T14:30:00.000Z"
+  },
+  {
+    "Id": 6,
+    "zoneId": 2,
+    "identifier": "PL-B1",
+    "coordinates": {"x": 200, "y": 250},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 7,
+    "zoneId": 2,
+    "identifier": "PL-B2",
+    "coordinates": {"x": 220, "y": 250},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 8,
+    "zoneId": 2,
+    "identifier": "PL-B3",
+    "coordinates": {"x": 240, "y": 250},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 9,
+    "zoneId": 2,
+    "identifier": "PL-B4",
+    "coordinates": {"x": 260, "y": 250},
+    "status": "sold",
+    "reservedUntil": null
+  },
+  {
+    "Id": 10,
+    "zoneId": 2,
+    "identifier": "PL-B5",
+    "coordinates": {"x": 280, "y": 250},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 11,
+    "zoneId": 3,
+    "identifier": "GR-C1",
+    "coordinates": {"x": 300, "y": 300},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 12,
+    "zoneId": 3,
+    "identifier": "GR-C2",
+    "coordinates": {"x": 320, "y": 300},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 13,
+    "zoneId": 3,
+    "identifier": "GR-C3",
+    "coordinates": {"x": 340, "y": 300},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 14,
+    "zoneId": 3,
+    "identifier": "GR-C4",
+    "coordinates": {"x": 360, "y": 300},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 15,
+    "zoneId": 3,
+    "identifier": "GR-C5",
+    "coordinates": {"x": 380, "y": 300},
+    "status": "sold",
+    "reservedUntil": null
+  },
+  {
+    "Id": 16,
+    "zoneId": 4,
+    "identifier": "GE-D1",
+    "coordinates": {"x": 400, "y": 350},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 17,
+    "zoneId": 4,
+    "identifier": "GE-D2",
+    "coordinates": {"x": 420, "y": 350},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 18,
+    "zoneId": 4,
+    "identifier": "GE-D3",
+    "coordinates": {"x": 440, "y": 350},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 19,
+    "zoneId": 4,
+    "identifier": "GE-D4",
+    "coordinates": {"x": 460, "y": 350},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 20,
+    "zoneId": 4,
+    "identifier": "GE-D5",
+    "coordinates": {"x": 480, "y": 350},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 21,
+    "zoneId": 5,
+    "identifier": "PF-A1",
+    "coordinates": {"x": 150, "y": 180},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 22,
+    "zoneId": 5,
+    "identifier": "PF-A2",
+    "coordinates": {"x": 170, "y": 180},
+    "status": "sold",
+    "reservedUntil": null
+  },
+  {
+    "Id": 23,
+    "zoneId": 5,
+    "identifier": "PF-A3",
+    "coordinates": {"x": 190, "y": 180},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 24,
+    "zoneId": 6,
+    "identifier": "PA-B1",
+    "coordinates": {"x": 80, "y": 220},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 25,
+    "zoneId": 6,
+    "identifier": "PA-B2",
+    "coordinates": {"x": 100, "y": 220},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 26,
+    "zoneId": 7,
+    "identifier": "PL-C1",
+    "coordinates": {"x": 200, "y": 240},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 27,
+    "zoneId": 7,
+    "identifier": "PL-C2",
+    "coordinates": {"x": 220, "y": 240},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 28,
+    "zoneId": 7,
+    "identifier": "PL-C3",
+    "coordinates": {"x": 240, "y": 240},
+    "status": "reserved",
+    "reservedUntil": "2024-03-22T15:00:00.000Z"
+  },
+  {
+    "Id": 29,
+    "zoneId": 8,
+    "identifier": "AN-D1",
+    "coordinates": {"x": 180, "y": 300},
+    "status": "available",
+    "reservedUntil": null
+  },
+  {
+    "Id": 30,
+    "zoneId": 8,
+    "identifier": "AN-D2",
+    "coordinates": {"x": 200, "y": 300},
+    "status": "available",
+    "reservedUntil": null
+  }
+]

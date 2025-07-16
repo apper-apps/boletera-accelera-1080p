@@ -1,0 +1,74 @@
+[
+  {
+    "Id": 1,
+    "name": "Concierto de Rock Internacional",
+    "date": "2024-03-15T20:00:00.000Z",
+    "venue": "Estadio Nacional",
+    "description": "Una noche épica con las mejores bandas de rock internacional. Disfruta de un espectáculo lleno de energía, luces y la mejor música rock en vivo.",
+    "imageUrl": "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=800&q=80",
+    "mapSvg": "<svg viewBox=\"0 0 800 600\" xmlns=\"http://www.w3.org/2000/svg\"><rect width=\"800\" height=\"600\" fill=\"#f3f4f6\"/><rect x=\"300\" y=\"50\" width=\"200\" height=\"100\" fill=\"#1f2937\" rx=\"10\"/><text x=\"400\" y=\"105\" text-anchor=\"middle\" fill=\"white\" font-size=\"16\">ESCENARIO</text></svg>",
+    "isPublic": true,
+    "capacity": 5000,
+    "createdAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "Id": 2,
+    "name": "Festival de Jazz",
+    "date": "2024-03-22T19:30:00.000Z",
+    "venue": "Teatro Municipal",
+    "description": "Una velada íntima con los mejores músicos de jazz local e internacional. Ambiente sofisticado y música de calidad en el corazón de la ciudad.",
+    "imageUrl": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80",
+    "mapSvg": "<svg viewBox=\"0 0 600 400\" xmlns=\"http://www.w3.org/2000/svg\"><rect width=\"600\" height=\"400\" fill=\"#f9fafb\"/><rect x=\"200\" y=\"50\" width=\"200\" height=\"80\" fill=\"#374151\" rx=\"5\"/><text x=\"300\" y=\"95\" text-anchor=\"middle\" fill=\"white\" font-size=\"14\">ESCENARIO</text></svg>",
+    "isPublic": true,
+    "capacity": 800,
+    "createdAt": "2024-01-20T14:30:00.000Z"
+  },
+  {
+    "Id": 3,
+    "name": "Obra de Teatro Clásica",
+    "date": "2024-04-05T21:00:00.000Z",
+    "venue": "Teatro Real",
+    "description": "Una puesta en escena magistral de una obra clásica del teatro español. Actuaciones memorables y una producción de primera clase.",
+    "imageUrl": "https://images.unsplash.com/photo-1507924538820-ede94a04019d?w=800&q=80",
+    "mapSvg": "<svg viewBox=\"0 0 500 350\" xmlns=\"http://www.w3.org/2000/svg\"><rect width=\"500\" height=\"350\" fill=\"#fef3c7\"/><rect x=\"150\" y=\"30\" width=\"200\" height=\"60\" fill=\"#92400e\" rx=\"5\"/><text x=\"250\" y=\"65\" text-anchor=\"middle\" fill=\"white\" font-size=\"12\">ESCENARIO</text></svg>",
+    "isPublic": true,
+    "capacity": 600,
+    "createdAt": "2024-02-01T09:15:00.000Z"
+  },
+  {
+    "Id": 4,
+    "name": "Conferencia Tecnológica",
+    "date": "2024-04-18T09:00:00.000Z",
+    "venue": "Centro de Convenciones",
+    "description": "El evento tecnológico más importante del año. Conferencias magistrales, talleres y networking con los mejores profesionales del sector.",
+    "imageUrl": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
+    "mapSvg": "<svg viewBox=\"0 0 700 500\" xmlns=\"http://www.w3.org/2000/svg\"><rect width=\"700\" height=\"500\" fill=\"#ede9fe\"/><rect x=\"250\" y=\"80\" width=\"200\" height=\"100\" fill=\"#5b21b6\" rx=\"8\"/><text x=\"350\" y=\"135\" text-anchor=\"middle\" fill=\"white\" font-size=\"14\">ESCENARIO</text></svg>",
+    "isPublic": true,
+    "capacity": 2000,
+    "createdAt": "2024-02-10T11:00:00.000Z"
+  },
+  {
+    "Id": 5,
+    "name": "Festival Gastronómico",
+    "date": "2024-05-12T12:00:00.000Z",
+    "venue": "Plaza Mayor",
+    "description": "Una celebración culinaria con los mejores chefs y restaurantes de la región. Degustaciones, talleres y espectáculos gastronómicos.",
+    "imageUrl": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80",
+    "mapSvg": "<svg viewBox=\"0 0 600 400\" xmlns=\"http://www.w3.org/2000/svg\"><rect width=\"600\" height=\"400\" fill=\"#fef7ed\"/><circle cx=\"300\" cy=\"200\" r=\"80\" fill=\"#ea580c\"/><text x=\"300\" y=\"205\" text-anchor=\"middle\" fill=\"white\" font-size=\"12\">ESCENARIO</text></svg>",
+    "isPublic": true,
+    "capacity": 1500,
+    "createdAt": "2024-02-15T16:20:00.000Z"
+  },
+  {
+    "Id": 6,
+    "name": "Espectáculo de Danza",
+    "date": "2024-05-25T20:30:00.000Z",
+    "venue": "Palacio de la Danza",
+    "description": "Una noche mágica con las mejores compañías de danza contemporánea. Coreografías innovadoras y artistas de talla mundial.",
+    "imageUrl": "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&q=80",
+    "mapSvg": "<svg viewBox=\"0 0 550 400\" xmlns=\"http://www.w3.org/2000/svg\"><rect width=\"550\" height=\"400\" fill=\"#fce7f3\"/><rect x=\"175\" y=\"60\" width=\"200\" height=\"80\" fill=\"#be185d\" rx=\"10\"/><text x=\"275\" y=\"105\" text-anchor=\"middle\" fill=\"white\" font-size=\"13\">ESCENARIO</text></svg>",
+    "isPublic": true,
+    "capacity": 900,
+    "createdAt": "2024-02-20T13:45:00.000Z"
+  }
+]

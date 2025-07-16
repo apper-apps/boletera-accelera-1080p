@@ -1,0 +1,200 @@
+[
+  {
+    "Id": 1,
+    "eventId": 1,
+    "name": "VIP",
+    "color": "#EC4899",
+    "price": 150,
+    "seatCount": 200,
+    "description": "Zona VIP con acceso exclusivo y servicios premium"
+  },
+  {
+    "Id": 2,
+    "eventId": 1,
+    "name": "Platea",
+    "color": "#8B5CF6",
+    "price": 80,
+    "seatCount": 800,
+    "description": "Zona central con excelente visibilidad"
+  },
+  {
+    "Id": 3,
+    "eventId": 1,
+    "name": "Gradería",
+    "color": "#3B82F6",
+    "price": 45,
+    "seatCount": 1200,
+    "description": "Zona elevada con buena vista general"
+  },
+  {
+    "Id": 4,
+    "eventId": 1,
+    "name": "General",
+    "color": "#10B981",
+    "price": 25,
+    "seatCount": 2800,
+    "description": "Zona de acceso general"
+  },
+  {
+    "Id": 5,
+    "eventId": 2,
+    "name": "Primera Fila",
+    "color": "#F59E0B",
+    "price": 120,
+    "seatCount": 50,
+    "description": "Asientos en primera fila"
+  },
+  {
+    "Id": 6,
+    "eventId": 2,
+    "name": "Palco",
+    "color": "#EF4444",
+    "price": 90,
+    "seatCount": 100,
+    "description": "Palcos laterales"
+  },
+  {
+    "Id": 7,
+    "eventId": 2,
+    "name": "Platea",
+    "color": "#8B5CF6",
+    "price": 65,
+    "seatCount": 400,
+    "description": "Zona central del teatro"
+  },
+  {
+    "Id": 8,
+    "eventId": 2,
+    "name": "Anfiteatro",
+    "color": "#6B7280",
+    "price": 40,
+    "seatCount": 250,
+    "description": "Zona elevada del teatro"
+  },
+  {
+    "Id": 9,
+    "eventId": 3,
+    "name": "Platea Premium",
+    "color": "#DC2626",
+    "price": 85,
+    "seatCount": 150,
+    "description": "Mejores asientos de platea"
+  },
+  {
+    "Id": 10,
+    "eventId": 3,
+    "name": "Platea General",
+    "color": "#7C3AED",
+    "price": 60,
+    "seatCount": 300,
+    "description": "Asientos de platea general"
+  },
+  {
+    "Id": 11,
+    "eventId": 3,
+    "name": "Balcón",
+    "color": "#059669",
+    "price": 35,
+    "seatCount": 150,
+    "description": "Balcón con vista elevada"
+  },
+  {
+    "Id": 12,
+    "eventId": 4,
+    "name": "VIP Business",
+    "color": "#7C2D12",
+    "price": 200,
+    "seatCount": 100,
+    "description": "Zona VIP para ejecutivos"
+  },
+  {
+    "Id": 13,
+    "eventId": 4,
+    "name": "Premium",
+    "color": "#A21CAF",
+    "price": 120,
+    "seatCount": 300,
+    "description": "Asientos premium con servicios"
+  },
+  {
+    "Id": 14,
+    "eventId": 4,
+    "name": "Estándar",
+    "color": "#1D4ED8",
+    "price": 75,
+    "seatCount": 800,
+    "description": "Asientos estándar"
+  },
+  {
+    "Id": 15,
+    "eventId": 4,
+    "name": "Estudiante",
+    "color": "#16A34A",
+    "price": 40,
+    "seatCount": 800,
+    "description": "Tarifa especial para estudiantes"
+  },
+  {
+    "Id": 16,
+    "eventId": 5,
+    "name": "Mesa VIP",
+    "color": "#BE123C",
+    "price": 180,
+    "seatCount": 80,
+    "description": "Mesas VIP con degustación completa"
+  },
+  {
+    "Id": 17,
+    "eventId": 5,
+    "name": "Mesa Premium",
+    "color": "#C2410C",
+    "price": 100,
+    "seatCount": 240,
+    "description": "Mesas premium con degustación"
+  },
+  {
+    "Id": 18,
+    "eventId": 5,
+    "name": "Entrada General",
+    "color": "#15803D",
+    "price": 35,
+    "seatCount": 1180,
+    "description": "Entrada general al festival"
+  },
+  {
+    "Id": 19,
+    "eventId": 6,
+    "name": "Platea Oro",
+    "color": "#B91C1C",
+    "price": 95,
+    "seatCount": 120,
+    "description": "Mejores asientos de platea"
+  },
+  {
+    "Id": 20,
+    "eventId": 6,
+    "name": "Platea",
+    "color": "#7C3AED",
+    "price": 70,
+    "seatCount": 400,
+    "description": "Asientos de platea"
+  },
+  {
+    "Id": 21,
+    "eventId": 6,
+    "name": "Palco",
+    "color": "#0891B2",
+    "price": 85,
+    "seatCount": 120,
+    "description": "Palcos laterales"
+  },
+  {
+    "Id": 22,
+    "eventId": 6,
+    "name": "Galería",
+    "color": "#059669",
+    "price": 45,
+    "seatCount": 260,
+    "description": "Galería superior"
+  }
+]

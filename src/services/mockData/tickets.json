@@ -1,0 +1,63 @@
+[
+  {
+    "Id": 1,
+    "userId": "user@example.com",
+    "eventId": 1,
+    "seatId": 3,
+    "qrCode": "{\"ticketId\":1,\"eventId\":1,\"seatId\":3,\"userId\":\"user@example.com\",\"timestamp\":\"2024-03-01T10:00:00.000Z\",\"signature\":\"1-1-3\"}",
+    "status": "valid",
+    "stripePaymentId": "pi_1234567890",
+    "purchasedAt": "2024-03-01T10:00:00.000Z",
+    "zoneId": 1,
+    "price": 150
+  },
+  {
+    "Id": 2,
+    "userId": "user@example.com",
+    "eventId": 1,
+    "seatId": 9,
+    "qrCode": "{\"ticketId\":2,\"eventId\":1,\"seatId\":9,\"userId\":\"user@example.com\",\"timestamp\":\"2024-03-01T10:00:00.000Z\",\"signature\":\"2-1-9\"}",
+    "status": "valid",
+    "stripePaymentId": "pi_1234567890",
+    "purchasedAt": "2024-03-01T10:00:00.000Z",
+    "zoneId": 2,
+    "price": 80
+  },
+  {
+    "Id": 3,
+    "userId": "user2@example.com",
+    "eventId": 2,
+    "seatId": 22,
+    "qrCode": "{\"ticketId\":3,\"eventId\":2,\"seatId\":22,\"userId\":\"user2@example.com\",\"timestamp\":\"2024-03-05T14:30:00.000Z\",\"signature\":\"3-2-22\"}",
+    "status": "used",
+    "stripePaymentId": "pi_0987654321",
+    "purchasedAt": "2024-03-05T14:30:00.000Z",
+    "usedAt": "2024-03-22T19:00:00.000Z",
+    "zoneId": 5,
+    "price": 120
+  },
+  {
+    "Id": 4,
+    "userId": "user3@example.com",
+    "eventId": 1,
+    "seatId": 15,
+    "qrCode": "{\"ticketId\":4,\"eventId\":1,\"seatId\":15,\"userId\":\"user3@example.com\",\"timestamp\":\"2024-03-02T16:45:00.000Z\",\"signature\":\"4-1-15\"}",
+    "status": "valid",
+    "stripePaymentId": "pi_1122334455",
+    "purchasedAt": "2024-03-02T16:45:00.000Z",
+    "zoneId": 3,
+    "price": 45
+  },
+  {
+    "Id": 5,
+    "userId": "user4@example.com",
+    "eventId": 3,
+    "seatId": 28,
+    "qrCode": "{\"ticketId\":5,\"eventId\":3,\"seatId\":28,\"userId\":\"user4@example.com\",\"timestamp\":\"2024-03-08T11:20:00.000Z\",\"signature\":\"5-3-28\"}",
+    "status": "valid",
+    "stripePaymentId": "pi_5566778899",
+    "purchasedAt": "2024-03-08T11:20:00.000Z",
+    "zoneId": 7,
+    "price": 65
+  }
+]
