@@ -23,4 +23,8 @@ export const userSlice = createSlice({
 });
 
 export const { setUser, clearUser } = userSlice.actions;
+
+// Export aliases for AdminPanel compatibility
+export const login = setUser;
+export const logout = clearUser;
 export default userSlice.reducer;
