@@ -99,13 +99,18 @@ const handleSubmit = async (e) => {
     if (!customerInfo.name || !customerInfo.email) {
       toast.error("Por favor completa todos los campos requeridos");
       return;
-    }
+}
 
-    if (!sessionId || !checkoutSession) {
-      toast.error("Sesión de compra no válida");
+    if (!sessionId) {
+      toast.error("Sesión de compra no encontrada. Por favor, inicia el proceso de compra nuevamente.");
+      navigate("/");
       return;
     }
 
+    if (!checkoutSession) {
+      toast.error("Error al cargar la sesión de compra. Por favor, intenta nuevamente.");
+      return;
+    }
     setLoading(true);
     
     try {

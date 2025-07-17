@@ -36,13 +36,12 @@ const handleSeatClick = (seat) => {
       return;
     }
 
-    // Special logic: If more than 2 seats are already in cart, 
+// Special logic: If more than 6 seats are already in cart, 
     // user must clear all before adding new ones
-    if (items.length >= 2) {
-      toast.warning("Tienes más de 2 asientos seleccionados. Debe quitar todos desde el carrito antes de agregar nuevos.");
+    if (items.length >= 6) {
+      toast.warning("Has alcanzado el límite máximo de 6 asientos. Debe quitar algunos desde el carrito antes de agregar nuevos.");
       return;
     }
-
     dispatch(addSeat({
       seat,
       zone,
@@ -179,8 +178,8 @@ const handleSeatClick = (seat) => {
             <ul className="space-y-1 text-blue-700">
               <li>• Haz clic en un asiento disponible para agregarlo al carrito</li>
               <li>• Pasa el cursor sobre los asientos para ver detalles</li>
-              <li>• Usa los filtros de zona para encontrar asientos específicos</li>
-              <li>• Si seleccionas más de 2 asientos, debes quitar todos desde el carrito para agregar nuevos</li>
+<li>• Usa los filtros de zona para encontrar asientos específicos</li>
+              <li>• Máximo 6 asientos por compra. Si alcanzas el límite, quita algunos del carrito para agregar nuevos</li>
             </ul>
           </div>
         </div>

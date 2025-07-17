@@ -79,10 +79,10 @@ const Header = () => {
                   </Badge>
                 )}
               </Button>
-            </Link>
+</Link>
 
             {/* User Info and Logout */}
-            {isAuthenticated && user && (
+            {isAuthenticated && user ? (
               <div className="hidden md:flex items-center space-x-3">
                 <span className="text-sm text-gray-700">
                   {user.firstName || user.emailAddress}
@@ -96,8 +96,20 @@ const Header = () => {
                   <ApperIcon name="LogOut" className="w-4 h-4" />
                 </Button>
               </div>
+            ) : (
+              <div className="hidden md:flex items-center space-x-3">
+                <Link to="/login">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-gray-600 hover:text-gray-900"
+                  >
+                    <ApperIcon name="LogIn" className="w-4 h-4 mr-2" />
+                    Iniciar Sesión
+                  </Button>
+                </Link>
+              </div>
             )}
-
             {/* Mobile Menu Button */}
             <div className="md:hidden">
               <Button
@@ -139,9 +151,8 @@ const Header = () => {
                 </Link>
               );
             })}
-            
-            {/* Mobile User Actions */}
-            {isAuthenticated && user && (
+{/* Mobile User Actions */}
+            {isAuthenticated && user ? (
               <div className="border-t pt-2 mt-2">
                 <div className="px-3 py-2 text-sm text-gray-700">
                   {user.firstName || user.emailAddress}
@@ -153,6 +164,17 @@ const Header = () => {
                   <ApperIcon name="LogOut" className="w-4 h-4" />
                   <span>Cerrar Sesión</span>
                 </button>
+              </div>
+            ) : (
+              <div className="border-t pt-2 mt-2">
+                <Link
+                  to="/login"
+                  className="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 w-full"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <ApperIcon name="LogIn" className="w-4 h-4" />
+                  <span>Iniciar Sesión</span>
+                </Link>
               </div>
             )}
           </nav>

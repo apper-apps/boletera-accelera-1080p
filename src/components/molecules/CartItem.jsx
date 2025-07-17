@@ -1,17 +1,17 @@
 import { motion } from "framer-motion";
 import { useDispatch } from "react-redux";
-import { removeSeat } from "@/store/slices/cartSlice";
+import React from "react";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import { formatCurrency } from "@/utils/formatters";
+import { removeSeat } from "@/store/slices/cartSlice";
 
 const CartItem = ({ item }) => {
   const dispatch = useDispatch();
 
   const handleRemove = () => {
-    dispatch(removeSeat(item.seat.id));
+    dispatch(removeSeat(item.seat.Id));
   };
-
   return (
     <motion.div
       className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
