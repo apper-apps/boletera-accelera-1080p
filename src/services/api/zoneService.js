@@ -1,227 +1,66 @@
-const { ApperClient } = window.ApperSDK;
-const apperClient = new ApperClient({
-  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
-  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
-});
+import mockZones from "@/services/mockData/zones.json";
+
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const zoneService = {
   async getAll() {
-    try {
-      const params = {
-        fields: [
-          { field: { Name: "Name" } },
-          { field: { Name: "color" } },
-          { field: { Name: "price" } },
-          { field: { Name: "seat_count" } },
-          { field: { Name: "description" } },
-          { field: { Name: "event_id" } }
-        ]
-      };
-      
-      const response = await apperClient.fetchRecords('zone', params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        throw new Error(response.message);
-      }
-      
-      return response.data || [];
-    } catch (error) {
-      console.error("Error fetching zones:", error);
-      throw error;
-    }
+    await delay(250);
+    return [...mockZones];
   },
 
-  async getById(id) {
-    try {
-      const params = {
-        fields: [
-          { field: { Name: "Name" } },
-          { field: { Name: "color" } },
-          { field: { Name: "price" } },
-          { field: { Name: "seat_count" } },
-          { field: { Name: "description" } },
-          { field: { Name: "event_id" } }
-        ]
-      };
-      
-      const response = await apperClient.getRecordById('zone', parseInt(id), params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        throw new Error(response.message);
-      }
-      
-      return response.data;
-    } catch (error) {
-      console.error(`Error fetching zone with ID ${id}:`, error);
-      throw error;
-    }
+  async getById(Id) {
+    await delay(200);
+    const zone = mockZones.find(zone => zone.Id === parseInt(Id));
+    if (!zone) throw new Error("Zone not found");
+    return { ...zone };
   },
 
   async getByEvent(eventId) {
-    try {
-      const params = {
-        fields: [
-          { field: { Name: "Name" } },
-          { field: { Name: "color" } },
-          { field: { Name: "price" } },
-          { field: { Name: "seat_count" } },
-          { field: { Name: "description" } },
-          { field: { Name: "event_id" } }
-        ],
-        where: [
-          {
-            FieldName: "event_id",
-            Operator: "EqualTo",
-            Values: [parseInt(eventId)]
-          }
-        ]
-      };
-      
-      const response = await apperClient.fetchRecords('zone', params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        throw new Error(response.message);
-      }
-      
-      return response.data || [];
-    } catch (error) {
-      console.error(`Error fetching zones for event ${eventId}:`, error);
-      throw error;
-    }
+    await delay(200);
+    return mockZones.filter(zone => zone.eventId === parseInt(eventId));
   },
 
   async create(zoneData) {
-    try {
-      const params = {
-        records: [
-          {
-            Name: zoneData.Name,
-            color: zoneData.color,
-            price: zoneData.price,
-            seat_count: zoneData.seat_count,
-            description: zoneData.description,
-            event_id: zoneData.event_id
-          }
-        ]
-      };
-      
-      const response = await apperClient.createRecord('zone', params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        throw new Error(response.message);
-      }
-      
-      if (response.results) {
-        const successfulRecords = response.results.filter(result => result.success);
-        const failedRecords = response.results.filter(result => !result.success);
-        
-        if (failedRecords.length > 0) {
-          console.error(`Failed to create ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
-        }
-        
-        return successfulRecords.length > 0 ? successfulRecords[0].data : null;
-      }
-    } catch (error) {
-      console.error("Error creating zone:", error);
-      throw error;
-    }
+    await delay(300);
+    const newZone = {
+      ...zoneData,
+      Id: Math.max(...mockZones.map(z => z.Id)) + 1,
+      createdAt: new Date().toISOString(),
+    };
+    mockZones.push(newZone);
+    return { ...newZone };
   },
 
-  async update(id, zoneData) {
-    try {
-      const params = {
-        records: [
-          {
-            Id: parseInt(id),
-            ...zoneData
-          }
-        ]
-      };
-      
-      const response = await apperClient.updateRecord('zone', params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        throw new Error(response.message);
-      }
-      
-      if (response.results) {
-        const successfulUpdates = response.results.filter(result => result.success);
-        const failedUpdates = response.results.filter(result => !result.success);
-        
-        if (failedUpdates.length > 0) {
-          console.error(`Failed to update ${failedUpdates.length} records:${JSON.stringify(failedUpdates)}`);
-        }
-        
-        return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
-      }
-    } catch (error) {
-      console.error("Error updating zone:", error);
-      throw error;
-    }
+  async update(Id, zoneData) {
+    await delay(250);
+    const index = mockZones.findIndex(zone => zone.Id === parseInt(Id));
+    if (index === -1) throw new Error("Zone not found");
+    
+    mockZones[index] = { ...mockZones[index], ...zoneData };
+    return { ...mockZones[index] };
   },
 
-  async delete(id) {
-    try {
-      const params = {
-        RecordIds: [parseInt(id)]
-      };
-      
-      const response = await apperClient.deleteRecord('zone', params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        throw new Error(response.message);
-      }
-      
-      return { success: true };
-    } catch (error) {
-      console.error("Error deleting zone:", error);
-      throw error;
-    }
+  async delete(Id) {
+    await delay(200);
+    const index = mockZones.findIndex(zone => zone.Id === parseInt(Id));
+    if (index === -1) throw new Error("Zone not found");
+    
+    mockZones.splice(index, 1);
+    return { success: true };
   },
 
   async getZoneStats(zoneId) {
-    try {
-      const zone = await this.getById(zoneId);
-      if (!zone) throw new Error("Zone not found");
-      
-      // Get seats for this zone to calculate actual statistics
-      const seatsParams = {
-        fields: [
-          { field: { Name: "status" } }
-        ],
-        where: [
-          {
-            FieldName: "zone_id",
-            Operator: "EqualTo",
-            Values: [parseInt(zoneId)]
-          }
-        ]
-      };
-      
-      const seatsResponse = await apperClient.fetchRecords('seat', seatsParams);
-      const seats = seatsResponse.success ? seatsResponse.data : [];
-      
-      const totalSeats = seats.length;
-      const availableSeats = seats.filter(s => s.status === 'available').length;
-      const reservedSeats = seats.filter(s => s.status === 'reserved').length;
-      const soldSeats = seats.filter(s => s.status === 'sold').length;
-      
-      return {
-        totalSeats,
-        availableSeats,
-        reservedSeats,
-        soldSeats,
-        revenue: zone.price * soldSeats
-      };
-    } catch (error) {
-      console.error(`Error fetching zone stats for ${zoneId}:`, error);
-      throw error;
-    }
-  }
+    await delay(200);
+    const zone = mockZones.find(z => z.Id === parseInt(zoneId));
+    if (!zone) throw new Error("Zone not found");
+    
+    // Mock statistics
+    return {
+      totalSeats: zone.seatCount,
+      availableSeats: Math.floor(zone.seatCount * 0.7),
+      reservedSeats: Math.floor(zone.seatCount * 0.1),
+      soldSeats: Math.floor(zone.seatCount * 0.2),
+      revenue: zone.price * Math.floor(zone.seatCount * 0.2),
+    };
+  },
 };

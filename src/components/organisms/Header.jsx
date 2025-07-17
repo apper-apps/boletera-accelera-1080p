@@ -74,24 +74,6 @@ const Header = () => {
               </Button>
             </Link>
 
-{/* Logout Button */}
-            <Button
-              onClick={async () => {
-                try {
-                  const { ApperUI } = window.ApperSDK;
-                  await ApperUI.logout();
-                } catch (error) {
-                  console.error("Logout failed:", error);
-                }
-              }}
-              variant="ghost"
-              size="sm"
-              className="hidden md:flex items-center text-gray-600 hover:text-gray-900"
-            >
-              <ApperIcon name="LogOut" className="w-4 h-4 mr-2" />
-              Logout
-            </Button>
-
             {/* Mobile Menu Button */}
             <div className="md:hidden">
               <Button
@@ -130,26 +112,9 @@ const Header = () => {
                 >
                   <ApperIcon name={item.icon} className="w-4 h-4" />
                   <span>{item.name}</span>
-</Link>
+                </Link>
               );
             })}
-            
-            {/* Mobile Logout Button */}
-            <button
-              onClick={async () => {
-                try {
-                  const { ApperUI } = window.ApperSDK;
-                  await ApperUI.logout();
-                } catch (error) {
-                  console.error("Logout failed:", error);
-                }
-                setIsMenuOpen(false);
-              }}
-              className="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-red-600 hover:text-red-900 hover:bg-red-50"
-            >
-              <ApperIcon name="LogOut" className="w-4 h-4" />
-              <span>Logout</span>
-            </button>
           </nav>
         </motion.div>
       )}
