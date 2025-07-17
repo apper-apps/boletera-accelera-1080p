@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
+import { AuthContext } from "@/App";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import Badge from "@/components/atoms/Badge";
@@ -10,20 +11,26 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const { items } = useSelector(state => state.cart);
-  const { role } = useSelector(state => state.user);
+  const { user, isAuthenticated } = useSelector(state => state.user);
+  const { logout } = useContext(AuthContext);
 
   const navigation = [
     { name: "Eventos", href: "/", icon: "Calendar" },
     { name: "Mis Boletos", href: "/my-tickets", icon: "Ticket" },
   ];
 
-  if (role === "admin") {
+  // Add role-based navigation
+  if (user?.emailAddress === "admin@boletera.com") {
     navigation.push({ name: "Admin", href: "/admin", icon: "Settings" });
   }
 
-  if (role === "staff") {
+  if (user?.emailAddress === "staff@boletera.com") {
     navigation.push({ name: "Scanner", href: "/scanner", icon: "Scan" });
   }
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
@@ -60,7 +67,7 @@ const Header = () => {
             })}
           </nav>
 
-          {/* Cart and Menu */}
+          {/* Cart, User Info and Menu */}
           <div className="flex items-center space-x-4">
             {/* Cart Icon */}
             <Link to="/checkout" className="relative">
@@ -73,6 +80,23 @@ const Header = () => {
                 )}
               </Button>
             </Link>
+
+            {/* User Info and Logout */}
+            {isAuthenticated && user && (
+              <div className="hidden md:flex items-center space-x-3">
+                <span className="text-sm text-gray-700">
+                  {user.firstName || user.emailAddress}
+                </span>
+                <Button
+                  onClick={handleLogout}
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  <ApperIcon name="LogOut" className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
 
             {/* Mobile Menu Button */}
             <div className="md:hidden">
@@ -115,6 +139,22 @@ const Header = () => {
                 </Link>
               );
             })}
+            
+            {/* Mobile User Actions */}
+            {isAuthenticated && user && (
+              <div className="border-t pt-2 mt-2">
+                <div className="px-3 py-2 text-sm text-gray-700">
+                  {user.firstName || user.emailAddress}
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 w-full"
+                >
+                  <ApperIcon name="LogOut" className="w-4 h-4" />
+                  <span>Cerrar Sesión</span>
+                </button>
+              </div>
+            )}
           </nav>
         </motion.div>
       )}

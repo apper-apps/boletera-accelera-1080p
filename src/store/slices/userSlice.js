@@ -1,28 +1,29 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  user: null,
   profile: null,
-  role: "buyer", // buyer, admin, staff
   isAuthenticated: false,
-  preferences: {
-    theme: "light",
-    language: "es",
-  },
+  role: "buyer",
+  preferences: {}
 };
 
-const userSlice = createSlice({
-name: "user",
+export const userSlice = createSlice({
+  name: 'user',
   initialState,
   reducers: {
     setUser: (state, action) => {
-      state.profile = action.payload;
-      state.isAuthenticated = true;
+      // CRITICAL: Always use deep cloning to avoid reference issues
+      // This prevents potential issues with object mutations
+      state.user = JSON.parse(JSON.stringify(action.payload));
+      state.isAuthenticated = !!action.payload;
     },
     setRole: (state, action) => {
       state.role = action.payload;
     },
     login: (state, action) => {
       const { email, password } = action.payload;
+      
       // Admin credentials validation
       if (email === "ramvidalgmail.com" && password === "Elevation1010$") {
         state.profile = { email, name: "Admin User" };
@@ -39,6 +40,7 @@ name: "user",
       state.role = "buyer";
     },
     clearUser: (state) => {
+      state.user = null;
       state.profile = null;
       state.isAuthenticated = false;
       state.role = "buyer";

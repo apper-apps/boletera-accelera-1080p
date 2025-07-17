@@ -1,87 +1,208 @@
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Mock data storage
-let checkouts = [];
-let nextId = 1;
-
 export const checkoutService = {
   async getAll() {
     await delay(300);
-    return [...checkouts];
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "checkout_state" } },
+          { field: { Name: "user_id" } },
+          { field: { Name: "ticket_limit" } },
+          { field: { Name: "CreatedOn" } },
+          { field: { Name: "CreatedBy" } },
+          { field: { Name: "ModifiedOn" } },
+          { field: { Name: "ModifiedBy" } }
+        ]
+      };
+
+      const response = await apperClient.fetchRecords("checkout", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching checkouts:", error?.response?.data?.message || error.message);
+      return [];
+    }
   },
 
   async getById(id) {
     await delay(200);
-    const checkout = checkouts.find(c => c.Id === parseInt(id));
-    if (!checkout) {
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "checkout_state" } },
+          { field: { Name: "user_id" } },
+          { field: { Name: "ticket_limit" } },
+          { field: { Name: "CreatedOn" } },
+          { field: { Name: "CreatedBy" } },
+          { field: { Name: "ModifiedOn" } },
+          { field: { Name: "ModifiedBy" } }
+        ]
+      };
+
+      const response = await apperClient.getRecordById("checkout", parseInt(id), params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error("Checkout not found");
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching checkout:", error?.response?.data?.message || error.message);
       throw new Error("Checkout not found");
     }
-    return { ...checkout };
   },
 
   async create(checkoutData) {
     await delay(400);
-    
-    // Only include updateable fields
-    const newCheckout = {
-      Id: nextId++,
-      Name: checkoutData.Name || `Checkout ${nextId}`,
-      Tags: checkoutData.Tags || "",
-      Owner: checkoutData.Owner || null,
-      user_id: checkoutData.user_id,
-      checkout_state: checkoutData.checkout_state || "active",
-      CreatedOn: new Date().toISOString(),
-      CreatedBy: checkoutData.user_id,
-      ModifiedOn: new Date().toISOString(),
-      ModifiedBy: checkoutData.user_id,
-    };
-    
-    checkouts.push(newCheckout);
-    return { ...newCheckout };
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        records: [{
+          Name: checkoutData.Name || `Checkout ${Date.now()}`,
+          Tags: checkoutData.Tags || "",
+          Owner: checkoutData.Owner || null,
+          checkout_state: checkoutData.checkout_state || "active",
+          user_id: checkoutData.user_id,
+          ticket_limit: checkoutData.ticket_limit || 10
+        }]
+      };
+
+      const response = await apperClient.createRecord("checkout", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error("Failed to create checkout");
+      }
+
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create checkout ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          
+          failedRecords.forEach(record => {
+            record.errors?.forEach(error => {
+              console.error(`${error.fieldLabel}: ${error.message}`);
+            });
+          });
+        }
+        
+        if (successfulRecords.length > 0) {
+          return successfulRecords[0].data;
+        }
+      }
+
+      throw new Error("Failed to create checkout");
+    } catch (error) {
+      console.error("Error creating checkout:", error?.response?.data?.message || error.message);
+      throw new Error("Failed to create checkout");
+    }
   },
 
   async update(id, updateData) {
     await delay(300);
-    const index = checkouts.findIndex(c => c.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Checkout not found");
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        records: [{
+          Id: parseInt(id),
+          Name: updateData.Name,
+          Tags: updateData.Tags,
+          Owner: updateData.Owner,
+          checkout_state: updateData.checkout_state,
+          user_id: updateData.user_id,
+          ticket_limit: updateData.ticket_limit
+        }]
+      };
+
+      const response = await apperClient.updateRecord("checkout", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error("Failed to update checkout");
+      }
+
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
+        
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to update checkout ${failedUpdates.length} records:${JSON.stringify(failedUpdates)}`);
+        }
+        
+        if (successfulUpdates.length > 0) {
+          return successfulUpdates[0].data;
+        }
+      }
+
+      throw new Error("Failed to update checkout");
+    } catch (error) {
+      console.error("Error updating checkout:", error?.response?.data?.message || error.message);
+      throw new Error("Failed to update checkout");
     }
-    
-    // Only update updateable fields
-    const updatedCheckout = {
-      ...checkouts[index],
-      Name: updateData.Name !== undefined ? updateData.Name : checkouts[index].Name,
-      Tags: updateData.Tags !== undefined ? updateData.Tags : checkouts[index].Tags,
-      Owner: updateData.Owner !== undefined ? updateData.Owner : checkouts[index].Owner,
-      user_id: updateData.user_id !== undefined ? updateData.user_id : checkouts[index].user_id,
-      checkout_state: updateData.checkout_state !== undefined ? updateData.checkout_state : checkouts[index].checkout_state,
-      ModifiedOn: new Date().toISOString(),
-      ModifiedBy: updateData.user_id || checkouts[index].ModifiedBy,
-    };
-    
-    checkouts[index] = updatedCheckout;
-    return { ...updatedCheckout };
   },
 
   async delete(id) {
     await delay(250);
-    const index = checkouts.findIndex(c => c.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Checkout not found");
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+
+      const response = await apperClient.deleteRecord("checkout", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return { success: false };
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error deleting checkout:", error?.response?.data?.message || error.message);
+      return { success: false };
     }
-    
-    checkouts.splice(index, 1);
-    return { success: true };
-  },
-
-  async getByUser(userId) {
-    await delay(250);
-    return checkouts.filter(c => c.user_id === userId);
-  },
-
-  async getByState(state) {
-    await delay(250);
-    return checkouts.filter(c => c.checkout_state === state);
   },
 
   async updateState(id, newState) {
@@ -89,15 +210,43 @@ export const checkoutService = {
     return this.update(id, { checkout_state: newState });
   },
 
-  async createFromCart(cartData, userId) {
-    await delay(400);
-    
-    const checkoutData = {
-      Name: `Checkout for Event ${cartData.eventId}`,
-      user_id: userId,
-      checkout_state: "active",
-    };
-    
-    return this.create(checkoutData);
-  },
+  async getByUser(userId) {
+    await delay(250);
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "checkout_state" } },
+          { field: { Name: "user_id" } },
+          { field: { Name: "ticket_limit" } },
+          { field: { Name: "CreatedOn" } }
+        ],
+        where: [
+          {
+            FieldName: "user_id",
+            Operator: "EqualTo",
+            Values: [userId]
+          }
+        ]
+      };
+
+      const response = await apperClient.fetchRecords("checkout", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching user checkouts:", error?.response?.data?.message || error.message);
+      return [];
+    }
+  }
 };
