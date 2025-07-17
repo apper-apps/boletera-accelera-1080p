@@ -48,16 +48,27 @@ const QRDisplay = ({ qrData, ticketInfo, onDownload }) => {
         Presenta este código QR en la entrada del evento
       </div>
 
-      {onDownload && (
-        <Button
-          onClick={onDownload}
-          variant="outline"
-          size="sm"
-          className="w-full"
-        >
-          <ApperIcon name="Download" className="w-4 h-4 mr-2" />
-          Descargar Boleto
-        </Button>
+{onDownload && (
+        <div className="space-y-2">
+          <Button
+            onClick={() => onDownload('pdf')}
+            variant="outline"
+            size="sm"
+            className="w-full"
+          >
+            <ApperIcon name="FileText" className="w-4 h-4 mr-2" />
+            Descargar PDF
+          </Button>
+          <Button
+            onClick={() => onDownload('jpg')}
+            variant="outline"
+            size="sm"
+            className="w-full"
+          >
+            <ApperIcon name="Image" className="w-4 h-4 mr-2" />
+            Descargar JPG
+          </Button>
+        </div>
       )}
     </motion.div>
   );

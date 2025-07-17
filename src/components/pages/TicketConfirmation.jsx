@@ -58,27 +58,60 @@ const TicketConfirmation = () => {
     };
   };
 
-  const handleDownloadTicket = (ticket) => {
-    // Create a simple download simulation
-    const ticketData = {
-      event: event.name,
-      seat: getTicketInfo(ticket).seatIdentifier,
-      zone: getTicketInfo(ticket).zoneName,
-      qr: ticket.qrCode,
-    };
+const handleDownloadTicket = async (ticket, format = 'pdf') => {
+    try {
+      const ticketInfo = getTicketInfo(ticket);
+      const ticketData = {
+        event: event.name,
+        seat: ticketInfo.seatIdentifier,
+        zone: ticketInfo.zoneName,
+        qrCode: ticket.qrCode || ticket.qr_code,
+        ticketId: ticket.Id
+      };
 
-    const blob = new Blob([JSON.stringify(ticketData, null, 2)], {
-      type: "application/json",
-    });
+      let blob;
+      let fileName;
+      let mimeType;
 
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `ticket-${ticket.Id}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+      if (format === 'pdf') {
+        // Generate optimized PDF
+        const { generateTicketPDF } = await import('@/utils/qrGenerator');
+        blob = await generateTicketPDF(ticketData);
+        fileName = `boleto-${ticket.Id}.pdf`;
+        mimeType = 'application/pdf';
+      } else if (format === 'jpg') {
+        // Generate optimized JPG image
+        const { generateTicketImage } = await import('@/utils/qrGenerator');
+        blob = await generateTicketImage(ticketData);
+        fileName = `boleto-${ticket.Id}.jpg`;
+        mimeType = 'image/jpeg';
+      } else {
+        // Fallback to optimized JSON (much smaller than before)
+        const optimizedData = {
+          evento: ticketData.event,
+          asiento: ticketData.seat,
+          zona: ticketData.zone,
+          qr: ticketData.qrCode
+        };
+        blob = new Blob([JSON.stringify(optimizedData)], { type: 'application/json' });
+        fileName = `boleto-${ticket.Id}.json`;
+        mimeType = 'application/json';
+      }
+
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.error("Error downloading ticket:", error);
+      // Fallback to basic download
+      handleDownloadTicket(ticket, 'json');
+    }
   };
-
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
