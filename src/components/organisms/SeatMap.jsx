@@ -21,7 +21,7 @@ const SeatMap = ({ event, zones, seats, selectedZone }) => {
       })
     : seats;
 
-  const handleSeatClick = (seat) => {
+const handleSeatClick = (seat) => {
     if (seat.status !== "available") {
       toast.error("Este asiento no está disponible");
       return;
@@ -33,6 +33,13 @@ const SeatMap = ({ event, zones, seats, selectedZone }) => {
     const isInCart = items.some(item => item.seat.Id === seat.Id);
     if (isInCart) {
       toast.info("Este asiento ya está en tu carrito");
+      return;
+    }
+
+    // Special logic: If more than 2 seats are already in cart, 
+    // user must clear all before adding new ones
+    if (items.length >= 2) {
+      toast.warning("Tienes más de 2 asientos seleccionados. Debe quitar todos desde el carrito antes de agregar nuevos.");
       return;
     }
 
@@ -164,7 +171,7 @@ const SeatMap = ({ event, zones, seats, selectedZone }) => {
       </div>
 
       {/* Instructions */}
-      <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+<div className="mt-4 p-4 bg-blue-50 rounded-lg">
         <div className="flex items-start space-x-3">
           <ApperIcon name="Info" className="w-5 h-5 text-blue-600 mt-0.5" />
           <div className="text-sm text-blue-800">
@@ -173,6 +180,7 @@ const SeatMap = ({ event, zones, seats, selectedZone }) => {
               <li>• Haz clic en un asiento disponible para agregarlo al carrito</li>
               <li>• Pasa el cursor sobre los asientos para ver detalles</li>
               <li>• Usa los filtros de zona para encontrar asientos específicos</li>
+              <li>• Si seleccionas más de 2 asientos, debes quitar todos desde el carrito para agregar nuevos</li>
             </ul>
           </div>
         </div>
