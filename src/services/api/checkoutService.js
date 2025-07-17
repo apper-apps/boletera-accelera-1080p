@@ -77,7 +77,7 @@ export const checkoutService = {
     }
   },
 
-  async create(checkoutData) {
+async create(checkoutData) {
     await delay(400);
     try {
       const { ApperClient } = window.ApperSDK;
@@ -86,14 +86,34 @@ export const checkoutService = {
         apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
       });
 
+      // Validate and convert user_id to integer
+      let userId = null;
+      if (checkoutData.user_id !== null && checkoutData.user_id !== undefined) {
+        const parsedUserId = parseInt(checkoutData.user_id);
+        if (isNaN(parsedUserId)) {
+          throw new Error(`Invalid user_id: "${checkoutData.user_id}" cannot be converted to integer`);
+        }
+        userId = parsedUserId;
+      }
+
+      // Validate and convert ticket_limit to integer
+      let ticketLimit = 10; // default value
+      if (checkoutData.ticket_limit !== null && checkoutData.ticket_limit !== undefined) {
+        const parsedTicketLimit = parseInt(checkoutData.ticket_limit);
+        if (isNaN(parsedTicketLimit)) {
+          throw new Error(`Invalid ticket_limit: "${checkoutData.ticket_limit}" cannot be converted to integer`);
+        }
+        ticketLimit = parsedTicketLimit;
+      }
+
       const params = {
         records: [{
           Name: checkoutData.Name || `Checkout ${Date.now()}`,
           Tags: checkoutData.Tags || "",
           Owner: checkoutData.Owner || null,
           checkout_state: checkoutData.checkout_state || "active",
-          user_id: checkoutData.user_id,
-          ticket_limit: checkoutData.ticket_limit || 10
+          user_id: userId,
+          ticket_limit: ticketLimit
         }]
       };
 
@@ -113,9 +133,22 @@ export const checkoutService = {
           
           failedRecords.forEach(record => {
             record.errors?.forEach(error => {
-              console.error(`${error.fieldLabel}: ${error.message}`);
+              console.error(`Field validation error - ${error.fieldLabel}: ${error.message}`);
             });
+            if (record.message) {
+              console.error(`Record error: ${record.message}`);
+            }
           });
+          
+          // Throw specific error for user_id validation
+          const userIdError = failedRecords.find(record => 
+            record.errors?.some(error => error.fieldName === 'user_id')
+          );
+          if (userIdError) {
+            throw new Error("User ID must be a valid integer value");
+          }
+          
+          throw new Error("Failed to create checkout due to field validation errors");
         }
         
         if (successfulRecords.length > 0) {
@@ -126,7 +159,7 @@ export const checkoutService = {
       throw new Error("Failed to create checkout");
     } catch (error) {
       console.error("Error creating checkout:", error?.response?.data?.message || error.message);
-      throw new Error("Failed to create checkout");
+      throw error; // Re-throw the original error to preserve error details
     }
   },
 
