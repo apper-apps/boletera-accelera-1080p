@@ -1,7 +1,12 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { toast } from "react-toastify";
 import { clearCart } from "@/store/slices/cartSlice";
+import { checkoutService } from "@/services/api/checkoutService";
+import { appItemService } from "@/services/api/appItemService";
+import { purchaseTimerService } from "@/services/api/purchaseTimerService";
 import CartItem from "@/components/molecules/CartItem";
 import Button from "@/components/atoms/Button";
 import ApperIcon from "@/components/ApperIcon";
@@ -10,14 +15,54 @@ import { formatCurrency } from "@/utils/formatters";
 const ShoppingCart = ({ className = "" }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { items, total } = useSelector(state => state.cart);
+  const { items, total, eventId } = useSelector(state => state.cart);
+  const [loading, setLoading] = useState(false);
 
   const handleClearCart = () => {
     dispatch(clearCart());
   };
 
-  const handleCheckout = () => {
-    navigate("/checkout");
+  const handleCheckout = async () => {
+    if (items.length === 0) {
+      toast.error("Tu carrito está vacío");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Create checkout session
+      const checkoutData = {
+        Name: `Checkout for Event ${eventId}`,
+        user_id: "guest_user", // In real app, use authenticated user
+        checkout_state: "active",
+      };
+
+      const checkout = await checkoutService.create(checkoutData);
+      
+      // Create items for checkout
+      const cartItems = items.map(item => ({
+        seat: item.seat,
+        zone: item.zone,
+        price: item.price,
+        item_type: "Seat",
+      }));
+
+      await appItemService.createFromCartItems(cartItems, checkout.Id);
+      
+      // Create purchase timer (15 minutes)
+      await purchaseTimerService.createForCheckout(checkout.Id, 15);
+      
+      // Navigate to checkout with session ID
+      navigate(`/checkout?session=${checkout.Id}`);
+      
+      toast.success("Sesión de compra iniciada");
+      
+    } catch (error) {
+      console.error("Error creating checkout session:", error);
+      toast.error("Error al iniciar el proceso de compra");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (items.length === 0) {
@@ -90,16 +135,26 @@ const ShoppingCart = ({ className = "" }) => {
           </div>
         </div>
 
-        <motion.div className="mt-6">
+<motion.div className="mt-6">
           <Button
             onClick={handleCheckout}
             className="w-full"
             size="lg"
+            disabled={loading}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <ApperIcon name="CreditCard" className="w-5 h-5 mr-2" />
-            Proceder al Pago
+            {loading ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2" />
+                Iniciando...
+              </>
+            ) : (
+              <>
+                <ApperIcon name="CreditCard" className="w-5 h-5 mr-2" />
+                Proceder al Pago
+              </>
+            )}
           </Button>
         </motion.div>
       </div>

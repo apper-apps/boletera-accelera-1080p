@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { clearCart } from "@/store/slices/cartSlice";
 import { ticketService } from "@/services/api/ticketService";
-import { eventService } from "@/services/api/eventService";
+import { checkoutService } from "@/services/api/checkoutService";
+import { appItemService } from "@/services/api/appItemService";
+import { purchaseTimerService } from "@/services/api/purchaseTimerService";
 import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
 import Label from "@/components/atoms/Label";
@@ -18,7 +20,13 @@ const Checkout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { items, total, eventId } = useSelector(state => state.cart);
+  const [searchParams] = useSearchParams();
+  const sessionId = searchParams.get('session');
+  
   const [loading, setLoading] = useState(false);
+  const [checkoutSession, setCheckoutSession] = useState(null);
+  const [purchaseTimer, setPurchaseTimer] = useState(null);
+  const [timeRemaining, setTimeRemaining] = useState(null);
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     email: "",
@@ -32,7 +40,60 @@ const Checkout = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  // Load checkout session and timer
+  useEffect(() => {
+    const loadCheckoutSession = async () => {
+      if (sessionId) {
+        try {
+          const session = await checkoutService.getById(sessionId);
+          setCheckoutSession(session);
+          
+          // Load purchase timer
+          const timers = await purchaseTimerService.getByCheckout(sessionId);
+          if (timers.length > 0) {
+            setPurchaseTimer(timers[0]);
+            
+            // Get remaining time
+            const timeInfo = await purchaseTimerService.getRemainingTime(sessionId);
+            setTimeRemaining(timeInfo);
+            
+            if (timeInfo.isExpired) {
+              toast.error("Tu sesión ha expirado. Por favor, inicia una nueva compra.");
+              navigate("/");
+            }
+          }
+        } catch (error) {
+          console.error("Error loading checkout session:", error);
+          toast.error("Error al cargar la sesión de compra");
+        }
+      }
+    };
+
+    loadCheckoutSession();
+  }, [sessionId, navigate]);
+
+  // Update timer countdown
+  useEffect(() => {
+    if (purchaseTimer && !timeRemaining?.isExpired) {
+      const interval = setInterval(async () => {
+        try {
+          const timeInfo = await purchaseTimerService.getRemainingTime(sessionId);
+          setTimeRemaining(timeInfo);
+          
+          if (timeInfo.isExpired) {
+            toast.error("Tu sesión ha expirado");
+            navigate("/");
+          }
+        } catch (error) {
+          console.error("Error updating timer:", error);
+        }
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [purchaseTimer, timeRemaining, sessionId, navigate]);
+
+const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!customerInfo.name || !customerInfo.email) {
@@ -40,9 +101,17 @@ const Checkout = () => {
       return;
     }
 
+    if (!sessionId || !checkoutSession) {
+      toast.error("Sesión de compra no válida");
+      return;
+    }
+
     setLoading(true);
     
     try {
+      // Update checkout to pending
+      await checkoutService.updateState(sessionId, "pending");
+      
       // Simulate Stripe payment
       const paymentData = {
         amount: total * 121, // Include tax
@@ -67,6 +136,14 @@ const Checkout = () => {
         customerInfo.email
       );
 
+      // Update checkout to completed
+      await checkoutService.updateState(sessionId, "completed");
+      
+      // Deactivate purchase timer
+      if (purchaseTimer) {
+        await purchaseTimerService.deactivateTimer(purchaseTimer.Id);
+      }
+
       // Clear cart
       dispatch(clearCart());
 
@@ -77,6 +154,7 @@ const Checkout = () => {
           customerInfo,
           payment,
           eventId,
+          checkoutSession,
         },
       });
 
@@ -85,6 +163,15 @@ const Checkout = () => {
     } catch (error) {
       console.error("Payment error:", error);
       toast.error("Error al procesar el pago. Intenta nuevamente.");
+      
+      // Update checkout to cancelled on error
+      if (sessionId) {
+        try {
+          await checkoutService.updateState(sessionId, "cancelled");
+        } catch (updateError) {
+          console.error("Error updating checkout state:", updateError);
+        }
+      }
     } finally {
       setLoading(false);
     }
@@ -104,18 +191,30 @@ const Checkout = () => {
     );
   }
 
-  return (
+return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="bg-white rounded-xl p-8 card-shadow"
       >
-        <div className="flex items-center mb-8">
-          <ApperIcon name="CreditCard" className="w-8 h-8 text-primary-500 mr-3" />
-          <h1 className="text-2xl font-display font-bold text-gray-900">
-            Finalizar Compra
-          </h1>
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center">
+            <ApperIcon name="CreditCard" className="w-8 h-8 text-primary-500 mr-3" />
+            <h1 className="text-2xl font-display font-bold text-gray-900">
+              Finalizar Compra
+            </h1>
+          </div>
+          
+          {/* Purchase Timer */}
+          {timeRemaining && !timeRemaining.isExpired && (
+            <div className="flex items-center bg-yellow-50 text-yellow-800 px-4 py-2 rounded-lg">
+              <ApperIcon name="Clock" className="w-5 h-5 mr-2" />
+              <span className="font-medium">
+                {Math.floor(timeRemaining.remainingMs / 60000)}:{String(Math.floor((timeRemaining.remainingMs % 60000) / 1000)).padStart(2, '0')}
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

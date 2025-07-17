@@ -18,9 +18,7 @@ const cartSlice = createSlice({
         state.items = [];
         state.total = 0;
       }
-      
 state.eventId = eventId;
-      
       // Check if seat already in cart
       const existingItem = state.items.find(item => item.seat.Id === seat.Id);
       if (!existingItem) {
