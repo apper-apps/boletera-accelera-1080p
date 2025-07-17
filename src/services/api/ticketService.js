@@ -1,86 +1,260 @@
-import mockTickets from "@/services/mockData/tickets.json";
 import { createTicketQRData } from "@/utils/qrGenerator";
 
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const { ApperClient } = window.ApperSDK;
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
 
 export const ticketService = {
   async getAll() {
-    await delay(300);
-    return [...mockTickets];
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "seat_id" } },
+          { field: { Name: "qr_code" } },
+          { field: { Name: "status" } },
+          { field: { Name: "stripe_payment_id" } },
+          { field: { Name: "purchased_at" } },
+          { field: { Name: "used_at" } },
+          { field: { Name: "used_by" } },
+          { field: { Name: "zone_id" } },
+          { field: { Name: "price" } },
+          { field: { Name: "user_id" } },
+          { field: { Name: "event_id" } }
+        ]
+      };
+      
+      const response = await apperClient.fetchRecords('ticket', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching tickets:", error);
+      throw error;
+    }
   },
 
-  async getById(Id) {
-    await delay(200);
-    const ticket = mockTickets.find(ticket => ticket.Id === parseInt(Id));
-    if (!ticket) throw new Error("Ticket not found");
-    return { ...ticket };
+  async getById(id) {
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "seat_id" } },
+          { field: { Name: "qr_code" } },
+          { field: { Name: "status" } },
+          { field: { Name: "stripe_payment_id" } },
+          { field: { Name: "purchased_at" } },
+          { field: { Name: "used_at" } },
+          { field: { Name: "used_by" } },
+          { field: { Name: "zone_id" } },
+          { field: { Name: "price" } },
+          { field: { Name: "user_id" } },
+          { field: { Name: "event_id" } }
+        ]
+      };
+      
+      const response = await apperClient.getRecordById('ticket', parseInt(id), params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching ticket with ID ${id}:`, error);
+      throw error;
+    }
   },
 
   async getByUser(userId) {
-    await delay(250);
-    return mockTickets.filter(ticket => ticket.userId === userId);
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "seat_id" } },
+          { field: { Name: "qr_code" } },
+          { field: { Name: "status" } },
+          { field: { Name: "stripe_payment_id" } },
+          { field: { Name: "purchased_at" } },
+          { field: { Name: "used_at" } },
+          { field: { Name: "used_by" } },
+          { field: { Name: "zone_id" } },
+          { field: { Name: "price" } },
+          { field: { Name: "user_id" } },
+          { field: { Name: "event_id" } }
+        ],
+        where: [
+          {
+            FieldName: "user_id",
+            Operator: "EqualTo",
+            Values: [userId]
+          }
+        ]
+      };
+      
+      const response = await apperClient.fetchRecords('ticket', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      console.error(`Error fetching tickets for user ${userId}:`, error);
+      throw error;
+    }
   },
 
   async getByEvent(eventId) {
-    await delay(250);
-    return mockTickets.filter(ticket => ticket.eventId === parseInt(eventId));
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "seat_id" } },
+          { field: { Name: "qr_code" } },
+          { field: { Name: "status" } },
+          { field: { Name: "stripe_payment_id" } },
+          { field: { Name: "purchased_at" } },
+          { field: { Name: "used_at" } },
+          { field: { Name: "used_by" } },
+          { field: { Name: "zone_id" } },
+          { field: { Name: "price" } },
+          { field: { Name: "user_id" } },
+          { field: { Name: "event_id" } }
+        ],
+        where: [
+          {
+            FieldName: "event_id",
+            Operator: "EqualTo",
+            Values: [parseInt(eventId)]
+          }
+        ]
+      };
+      
+      const response = await apperClient.fetchRecords('ticket', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      console.error(`Error fetching tickets for event ${eventId}:`, error);
+      throw error;
+    }
   },
 
   async create(ticketData) {
-    await delay(400);
-    const newTicket = {
-      ...ticketData,
-      Id: Math.max(...mockTickets.map(t => t.Id)) + 1,
-      qrCode: createTicketQRData(ticketData),
-      status: "valid",
-      purchasedAt: new Date().toISOString(),
-    };
-    
-    mockTickets.push(newTicket);
-    return { ...newTicket };
+    try {
+      const params = {
+        records: [
+          {
+            Name: ticketData.Name || `Ticket for ${ticketData.user_id}`,
+            seat_id: ticketData.seat_id,
+            qr_code: createTicketQRData(ticketData),
+            status: "valid",
+            stripe_payment_id: ticketData.stripe_payment_id,
+            purchased_at: new Date().toISOString(),
+            zone_id: ticketData.zone_id,
+            price: ticketData.price,
+            user_id: ticketData.user_id,
+            event_id: ticketData.event_id
+          }
+        ]
+      };
+      
+      const response = await apperClient.createRecord('ticket', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+        }
+        
+        return successfulRecords.length > 0 ? successfulRecords[0].data : null;
+      }
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+      throw error;
+    }
   },
 
   async validateTicket(ticketId) {
-    await delay(300);
-    const index = mockTickets.findIndex(ticket => ticket.Id === parseInt(ticketId));
-    if (index === -1) throw new Error("Ticket not found");
-    
-    const ticket = mockTickets[index];
-    
-    if (ticket.status === "used") {
-      throw new Error("Ticket already used");
+    try {
+      const ticket = await this.getById(ticketId);
+      if (!ticket) throw new Error("Ticket not found");
+      
+      if (ticket.status === "used") {
+        throw new Error("Ticket already used");
+      }
+      
+      if (ticket.status === "cancelled") {
+        throw new Error("Ticket cancelled");
+      }
+      
+      return { ...ticket, valid: true };
+    } catch (error) {
+      console.error("Error validating ticket:", error);
+      throw error;
     }
-    
-    if (ticket.status === "cancelled") {
-      throw new Error("Ticket cancelled");
-    }
-    
-    return { ...ticket, valid: true };
   },
 
   async useTicket(ticketId, staffId) {
-    await delay(250);
-    const index = mockTickets.findIndex(ticket => ticket.Id === parseInt(ticketId));
-    if (index === -1) throw new Error("Ticket not found");
-    
-    const ticket = mockTickets[index];
-    
-    if (ticket.status !== "valid") {
-      throw new Error("Ticket is not valid");
+    try {
+      const ticket = await this.getById(ticketId);
+      if (!ticket) throw new Error("Ticket not found");
+      
+      if (ticket.status !== "valid") {
+        throw new Error("Ticket is not valid");
+      }
+      
+      const params = {
+        records: [
+          {
+            Id: parseInt(ticketId),
+            status: "used",
+            used_at: new Date().toISOString(),
+            used_by: staffId
+          }
+        ]
+      };
+      
+      const response = await apperClient.updateRecord('ticket', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
+      }
+    } catch (error) {
+      console.error("Error using ticket:", error);
+      throw error;
     }
-    
-    mockTickets[index] = {
-      ...mockTickets[index],
-      status: "used",
-      usedAt: new Date().toISOString(),
-      usedBy: staffId,
-    };
-    
-    return { ...mockTickets[index] };
   },
 
   async processPayment(paymentData) {
-    await delay(1000); // Simulate Stripe processing
+    // Simulate Stripe processing with delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
     // Simulate payment processing
     const paymentId = `pi_${Math.random().toString(36).substr(2, 9)}`;
@@ -95,24 +269,29 @@ export const ticketService = {
   },
 
   async createTicketsFromCart(cartItems, paymentId, userEmail) {
-    await delay(500);
-    
-    const tickets = [];
-    
-    for (const item of cartItems) {
-      const ticketData = {
-        userId: userEmail,
-        eventId: item.eventId,
-        seatId: item.seat.Id,
-        stripePaymentId: paymentId,
-        zoneId: item.zone.Id,
-        price: item.price,
-      };
+    try {
+      const tickets = [];
       
-      const ticket = await this.create(ticketData);
-      tickets.push(ticket);
+      for (const item of cartItems) {
+        const ticketData = {
+          user_id: userEmail,
+          event_id: item.eventId,
+          seat_id: item.seat.Id,
+          stripe_payment_id: paymentId,
+          zone_id: item.zone.Id,
+          price: item.price,
+        };
+        
+        const ticket = await this.create(ticketData);
+        if (ticket) {
+          tickets.push(ticket);
+        }
+      }
+      
+      return tickets;
+    } catch (error) {
+      console.error("Error creating tickets from cart:", error);
+      throw error;
     }
-    
-    return tickets;
-  },
+  }
 };
